@@ -24,6 +24,7 @@ namespace ToDoMVCApplication.Controllers
             }
             CreateTable(sqlite_conn);
             ReadData(sqlite_conn);
+            ReadTaskData(sqlite_conn);
             return View();
         }
 
@@ -58,6 +59,7 @@ namespace ToDoMVCApplication.Controllers
             catch (SqlException e)
             {
                 Console.WriteLine(e.ToString());
+                
             }
             return Json(new { returnvalue = "true" });
         }
@@ -93,6 +95,7 @@ namespace ToDoMVCApplication.Controllers
             catch (SqlException e)
             {
                 Console.WriteLine(e.ToString());
+                sqlite_conn.Close();
             }
             return Json(new {User, result = false}, JsonRequestBehavior.AllowGet);
         }
@@ -100,40 +103,66 @@ namespace ToDoMVCApplication.Controllers
         public List<Task> GetAllTaskForLoggedInUser(int UserId) {
             List<Task> task = new List<Task>();
             sqlite_conn.Open();
-            String sql = "Select * from Task WHERE userId = @UserId";
+            //String sql = "Select * from Task WHERE userId = @UserId";
             
-            using (SQLiteCommand cmd = new SQLiteCommand(sql, sqlite_conn))
-            {
-                cmd.Parameters.AddWithValue("@UserId", UserId);
-                using (SQLiteDataReader rdr = cmd.ExecuteReader())
-                {
-                    while (rdr.Read())
-                    {
-                        task.Add(new Task
-                        {
-                            TaskId = Convert.ToInt32(rdr["Id"]),
-                            TaskDescription = Convert.ToString(rdr["TaskDescription"]),
-                            TaskName = Convert.ToString(rdr["TaskName"]),
-                            DeleteInd = Convert.ToBoolean(rdr["deleteInd"]),
-                            ImportantInd = Convert.ToBoolean(rdr["importantInd"]),
-                            ModifiedDateTime = Convert.ToDateTime(rdr["modifiedDateTime"]),
-                            CreateDateTime = Convert.ToDateTime(rdr["createdDateTime"]),
-                        });
+            //using (SQLiteCommand cmd = new SQLiteCommand(sql, sqlite_conn))
+            //{
+            //    cmd.Parameters.AddWithValue("@UserId", UserId);
+            //    using (SQLiteDataReader rdr = cmd.ExecuteReader())
+            //    {
+            //        while (rdr.Read())
+            //        {
+            //            task.Add(new Task
+            //            {
+            //                TaskId = Convert.ToInt32(rdr["Id"]),
+            //                TaskDescription = Convert.ToString(rdr["TaskDescription"]),
+            //                TaskName = Convert.ToString(rdr["TaskName"]),
+            //                DeleteInd = Convert.ToBoolean(rdr["deleteInd"]),
+            //                ImportantInd = Convert.ToBoolean(rdr["importantInd"]),
+            //                ModifiedDateTime = Convert.ToDateTime(rdr["modifiedDateTime"]),
+            //                CreateDateTime = Convert.ToDateTime(rdr["createdDateTime"]),
+            //            });
                         
-                    }
-                }
+            //        }
+            //    }
+            //}
+
+            SQLiteCommand sqlite_cmd;
+            sqlite_cmd = sqlite_conn.CreateCommand();
+            //String sql = "Select * from Task WHERE userId = @UserId";
+            String sql = "Select * from Task ";
+            DataSet ds = new DataSet();
+            sqlite_cmd.CommandText = sql;
+            sqlite_cmd.Parameters.AddWithValue("@UserId", UserId);
+            SQLiteDataAdapter da = new SQLiteDataAdapter(sqlite_cmd);
+
+            da.Fill(ds);
+            foreach (DataRow rdr in ds.Tables[0].Rows)
+            {
+                task.Add(new Task
+                {
+                    TaskId = Convert.ToInt32(rdr["Id"]),
+                    TaskDescription = Convert.ToString(rdr["description"]),
+                    TaskName = Convert.ToString(rdr["name"]),
+                    DeleteInd = Convert.ToBoolean(rdr["deleteInd"]),
+                    ImportantInd = Convert.ToBoolean(rdr["importantInd"]),
+                    ModifiedDateTime = Convert.ToString(rdr["modifiedDateTime"]),
+                    CreateDateTime = Convert.ToString(rdr["createdDateTime"]),
+                });
             }
+            sqlite_conn.Close();
+
             if (task.Count() == 0)
             {
                 task.Add(new Task
                 {
-                    TaskId = 0,
+                    TaskId = 99,
                     TaskDescription = "TestTask",
                     TaskName = "Task1",
                     DeleteInd = false,
                     ImportantInd = false,
-                    CreateDateTime = DateTime.Now,
-                    ModifiedDateTime = DateTime.Now,
+                    CreateDateTime = DateTime.Now.ToString(),
+                    ModifiedDateTime = DateTime.Now.ToString(),
 
                 });
             }
@@ -149,7 +178,7 @@ namespace ToDoMVCApplication.Controllers
                 sqlite_conn.Open();
                 SQLiteCommand sqlite_cmd;
                 sqlite_cmd = sqlite_conn.CreateCommand();
-                String sql = "Select * from Users WHERE Id = @TaskId";
+                String sql = "Select * from Task WHERE Id = @TaskId";
 
                 DataSet ds = new DataSet();
                 sqlite_cmd.CommandText = sql;
@@ -171,8 +200,10 @@ namespace ToDoMVCApplication.Controllers
 
             catch (SqlException e)
             {
+                sqlite_conn.Close();
                 Console.WriteLine(e.ToString());
             }
+           // ReadTaskData(sqlite_conn);
             IEnumerable<Task> tn = GetAllTaskForLoggedInUser(UserId);
             return PartialView("ToDoMainPage", tn);
         }
@@ -182,7 +213,7 @@ namespace ToDoMVCApplication.Controllers
             sqlite_conn.Open();
             SQLiteCommand sqlite_cmd;
             sqlite_cmd = sqlite_conn.CreateCommand();
-            String sql = "update task set name = @taskName, description = @description, modifieddatetime = @modifieddate, DeleteInd = @DeleteInd, importantInd = @importantInd, userId = @UserId Where id = @TaskId";
+            String sql = "update task set name = @taskName, description = @description, modifieddatetime = @modifieddate, DeleteInd = @DeleteInd, importantInd = @importantInd Where id = @TaskId";
             sqlite_cmd.Parameters.AddWithValue("@taskId", task.TaskId);
             sqlite_cmd.Parameters.AddWithValue("@taskName", task.TaskName);
             sqlite_cmd.Parameters.AddWithValue("@description", task.TaskDescription);
@@ -199,14 +230,13 @@ namespace ToDoMVCApplication.Controllers
             sqlite_conn.Open();
             SQLiteCommand sqlite_cmd;
             sqlite_cmd = sqlite_conn.CreateCommand();
-            String sql = "INSERT INTO TASK(id,name,description,modifieddatetime,deleteInd,importantind,createddatetime,UserId) VALUES (@TaskId,@taskName,@description,@modifiedDate,@DeleteInd,@importantInd,@createdDate,@UserId)";
-            sqlite_cmd.Parameters.AddWithValue("@taskId", task.TaskId);
+            String sql = "INSERT INTO TASK(name,description,modifieddatetime,deleteInd,importantind,createddatetime,UserId) VALUES (@taskName,@description,@modifiedDate,@DeleteInd,@importantInd,@createdDate,@UserId)";
             sqlite_cmd.Parameters.AddWithValue("@taskName", task.TaskName);
             sqlite_cmd.Parameters.AddWithValue("@description", task.TaskDescription);
-            sqlite_cmd.Parameters.AddWithValue("@modifiedDate", task.ModifiedDateTime);
+            sqlite_cmd.Parameters.AddWithValue("@modifiedDate", DateTime.Now.ToString());
             sqlite_cmd.Parameters.AddWithValue("@DeleteInd", task.DeleteInd);
             sqlite_cmd.Parameters.AddWithValue("@importantInd", task.ImportantInd);
-            sqlite_cmd.Parameters.AddWithValue("@createdDate", DateTime.Now);
+            sqlite_cmd.Parameters.AddWithValue("@createdDate", DateTime.Now.ToString());
             sqlite_cmd.Parameters.AddWithValue("@UserId", UserId);
             sqlite_cmd.CommandText = sql;
             sqlite_cmd.ExecuteNonQuery();
@@ -219,16 +249,17 @@ namespace ToDoMVCApplication.Controllers
             SQLiteCommand sqlite_cmd;
             try
             {
-                string CreatetableTask = "CREATE Table [Task] ([Id] INTEGER NOT NULL, [name] TEXT NOT NULL, [description] TEXT NULL , [createddatetime] NUMERIC NOT NULL , [modifieddatetime] NUMERIC NOT NULL , [deleteInd] NUMERIC NOT NULL , [importantInd] NUMERIC NOT NULL , [userId] INTEGER NOT NULL, CONSTRAINT[PK_Task] PRIMARY KEY([Id]))";
+                string CreatetableTask = "DROP TABLE [Task]; CREATE Table [Task] ([Id] INTEGER PRIMARY KEY AUTOINCREMENT, [name] TEXT NOT NULL, [description] TEXT NULL , [createddatetime] TEXT NULL , [modifieddatetime] TEXT NULL , [deleteInd] NUMERIC NOT NULL , [importantInd] NUMERIC NOT NULL , [userId] INTEGER NOT NULL)";
                 sqlite_cmd = conn.CreateCommand();
                 sqlite_cmd.CommandText = CreatetableTask;
                 sqlite_cmd.ExecuteNonQuery();
             }
             catch (Exception e) {
                 Console.WriteLine(e.ToString());
+                sqlite_conn.Close();
             }
             try {
-                string CreatetableUser = "CREATE TABLE IF NOT EXISTS [Users] ( [Id]       INT IDENTITY(1, 1) NOT NULL, [username] NCHAR(100) NOT NULL,[name]     NCHAR(100) NOT NULL,[emailId]  NCHAR(100) NOT NULL, [password] NCHAR(20)  NOT NULL,[deleteInd] BIT NOT NULL DEFAULT 0); ";
+                string CreatetableUser = "DROP TABLE [Users];CREATE TABLE  [Users] ( [Id] INTEGER PRIMARY KEY AUTOINCREMENT, [username] NCHAR(100) NOT NULL,[name]     NCHAR(100) NOT NULL,[emailId]  NCHAR(100) NOT NULL, [password] NCHAR(20)  NOT NULL,[deleteInd] BIT NOT NULL DEFAULT 0); ";
                 sqlite_cmd = conn.CreateCommand();
                 sqlite_cmd.CommandText = CreatetableUser;
                 sqlite_cmd.ExecuteNonQuery();
@@ -236,6 +267,7 @@ namespace ToDoMVCApplication.Controllers
             catch (Exception e)
             {
                 Console.WriteLine(e.ToString());
+                conn.Close();
             }
             conn.Close();
             // sqlite_cmd.CommandText = Createsql1;
@@ -262,14 +294,43 @@ namespace ToDoMVCApplication.Controllers
                 InsertDummyRecord(conn);
             }
         }
+        static void ReadTaskData(SQLiteConnection conn)
+        {
+            conn.Open();
+            SQLiteCommand sqlite_cmd;
+            sqlite_cmd = conn.CreateCommand();
+            sqlite_cmd.CommandText = "SELECT * FROM Task";
+            sqlite_cmd.Prepare();
+            DataSet ds = new DataSet();
+            SQLiteDataAdapter da = new SQLiteDataAdapter(sqlite_cmd);
+            da.Fill(ds);
+            conn.Close();
 
+            bool addDummy = ((ds.Tables.Count > 0) && (ds.Tables[0].Rows.Count > 0));
+            if (!addDummy)
+            {
+                InsertTaskDummyRecord(conn);
+            }
+        }
+
+        static void InsertTaskDummyRecord(SQLiteConnection conn)
+        {
+            //SQLiteDataReader sqlite_datareader;
+            SQLiteCommand sqlite_cmd;
+            conn.Open();
+
+            sqlite_cmd = conn.CreateCommand();
+            sqlite_cmd.CommandText = "insert into Task (name, description, modifieddatetime, createddatetime,deleteInd,importantInd,Userid) values ('Task100','Tyson','11/11/2019','11/11/2019',0,0,2);insert into Task (name, description, modifieddatetime, createddatetime,deleteInd,importantInd,Userid) values ('Task200','Tyson2','10/11/2019','10/11/2019',0,0,2);";
+            sqlite_cmd.ExecuteNonQuery();
+            conn.Close();
+        }
         static void InsertDummyRecord(SQLiteConnection conn) {
             //SQLiteDataReader sqlite_datareader;
             SQLiteCommand sqlite_cmd;
             conn.Open();
 
             sqlite_cmd = conn.CreateCommand();
-            sqlite_cmd.CommandText  = "insert into Users (id, name, username, emailId, password) values (1, 'Rohit','Tyson','rohit@gmail.com','1234');";
+            sqlite_cmd.CommandText  = "insert into Users (name, username, emailId, password) values ('Rohit','Tyson','rohit@gmail.com','1234');insert into Users (name, username, emailId, password) values ('Rohit2','Tyson2','rohit@gmail.com','1234');";
             sqlite_cmd.ExecuteNonQuery();
             conn.Close();
         }

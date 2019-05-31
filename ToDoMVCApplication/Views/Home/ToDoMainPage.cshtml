@@ -1,12 +1,8 @@
 ﻿
 @model List<ToDoMVCApplication.Models.Task>
 
-    @{ 
-//int UserId = Model.;
-    }
-
-<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>Welcome to ToDo Application</title>
     <meta charset="utf-8">
@@ -16,7 +12,6 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 </head>
 <body>
-   
     <div class="container">
         <h3>Navbar Forms</h3>
         <p>Use the .navbar-form class to vertically align form elements (same padding as links) inside the navbar.</p>
@@ -35,16 +30,21 @@
             <div class="todo-list box">
 
                 <h2>Incomplete Tasks</h2>
+                <div >
                 <ul>
-                   
-                        
-                            <input type="checkbox"><label>Task1</lable>
-                        
-                   
-
+                    @for (int i = 0; i < Model.Count; i++)
+                    {
+                        <li><ul>
+    <li><input type="checkbox"><label>@Model[i].TaskName</label><label style="float:right">@Model[i].CreateDateTime</label></li>
+    <li><label style="">@Model[i].TaskDescription</label></li>
+    <ul>
+</li>
+                    }
                 </ul>
+                    </div>
+            </div>
 
-            </div><!--/todo-list-->
+            <!--/todo-list-->
 
             <div class="complete-list box">
 
@@ -58,10 +58,10 @@
             </div><!--/complete-list-->
 
 
-
-
-
         </section><!--/container-->
+
+
+
     </div>
 
 </body>
@@ -75,7 +75,6 @@
     width: 100%;
   background:#333;
   padding:25px;
-  max-width:760px;
   margin:25px auto;
   overflow:hidden;
   border-radius:10px;
@@ -183,7 +182,7 @@ var createNewTask = function(task){
   //CLEAR THE INPUT
 
         var data = {
-        'TaskId': 1,
+        'TaskId': 980,
         'TaskName': newTask.value,
         'TaskDescription': "test",
         'DeleteInd': true,
@@ -195,13 +194,14 @@ var createNewTask = function(task){
             data: JSON.stringify(data),
             contentType: 'application/json; charset=utf-8',
             success: function (result) {
-                alert('Account Details Created Successfully');
+                $("#main-container-login").html(result);
+                alert('Task Created Successfully');
             }
         });
         
   newTask.value="";
   //BIND THE NEW LIST ITEM TO THE INCOMPLETE LIST
-  bindIncompleteItems(listItem, completeTask);
+  //bindIncompleteItems(listItem, completeTask);
 
 };
 
