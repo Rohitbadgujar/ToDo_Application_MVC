@@ -2,192 +2,268 @@
 @model List<ToDoMVCApplication.Models.Task>
 
 <html lang="en">
-
-<head>
-    <title>Welcome to ToDo Application</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-</head>
 <body>
     <div class="container">
-        <h3>Navbar Forms</h3>
-        <p>Use the .navbar-form class to vertically align form elements (same padding as links) inside the navbar.</p>
-        <section class="container">
+        <!-- Trigger the modal with a button -->
+        <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Add New Task</button>
+        <p style="float:right;    padding-right: 71px;">
+            <a href="#" id="logoutBtnCLick" class="btn btn-info btn-lg">
+                <span class="glyphicon glyphicon-log-out"></span> Log out
+            </a>
+        </p>
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog">
 
-            <h1>To-Do App</h1>
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" style="float:left">Add New Task</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                                <label for="new-task">Task Name</label>
+                                <textarea class="form-control" rows="1" type="text" id="new-task"></textarea> <br>
+                                <label for="comment">Task Decription:</label>
+                                <textarea class="form-control" rows="5" id="task-description"></textarea>
+                            </div>
 
-            <div class="new-task-container box">
-
-                <label for="new-task">Add New Task</label>
-                <input type="text" id="new-task">
-                <button id="addTask">Add Task</button>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Save and Close</button>
+                    </div>
+                </div>
 
             </div>
+        </div>
 
-            <div class="todo-list box">
+    </div>
+    <section class="container">
 
+        <div class="todo-list box" style="height:536px;width:95%">
+            <div class="button-header" style="width:100%;height:13%">
+                <button type="button" id="completedTask" style="background-color: limegreen !important;color: black;" class="btn btn-outline-primary">Complete Task</button>
+                <button type="button" id="importantTask" style="background-color: chocolate !important;color: black;" class="btn btn-outline-secondary">Important</button>
+                <button type="button" id="deleteTask" style="background-color: red !important;color: black;" class="btn btn-outline-success">Delete</button>
+                <label id="errorMessage" style="display:none;color: red !important;">Please select Task to update</label>
+                <p style="float:right;padding-right:20px">
+                    <a href="#" class="btn btn-info btn-lg">
+                        <span class="glyphicon glyphicon-edit"></span> Edit
+                    </a>
+                </p>
                 <h2>Incomplete Tasks</h2>
-                <div >
+            </div>
+            <div class="list-group">
                 <ul>
                     @for (int i = 0; i < Model.Count; i++)
                     {
-                        <li><ul>
-    <li><input type="checkbox"><label>@Model[i].TaskName</label><label style="float:right">@Model[i].CreateDateTime</label></li>
-    <li><label style="">@Model[i].TaskDescription</label></li>
-    <ul>
-</li>
+                        var importantTask = "";
+                        var style = "";
+                        var impInd = "false";
+                        if (Model[i].DeleteInd != true)
+                        {
+                            if (Model[i].ImportantInd == true)
+                            {
+                                impInd = "true";
+                                importantTask = "<span style='float:right;color:orangered' class='badge'>Important</span>";
+                            }
+                            if (Model[i].CompletedInd == true)
+                            {
+                                style = "text-decoration: line-through";
+                            }
+                            <li>
+                                <a href="#" id="TaskList" style="background-color:steelblue; !important;height:110px" class="list-group-item">
+                                    <h5 class="list-group-item-heading" style="color:burlywood ;"><input value="@Model[i].TaskId" name="taskchk" type="checkbox"><label style="@Html.Raw(style)">@Model[i].TaskName</label> @Html.Raw(@importantTask)</h5>
+                                    <h6 class="list-group-item-text"><label style="@Html.Raw(style)">@Model[i].TaskDescription</label></h6>
+                                    <label style="float:right">Last Modified on @Model[i].CreateDateTime</label>
+                                    <input type="hidden" value="@Model[i].TaskName" id="hdnTaskName_@Model[i].TaskId">
+                                    <input type="hidden" value="@Model[i].TaskDescription" id="hdnTaskDescription_@Model[i].TaskId">
+                                    <input type="hidden" value="@Model[i].CreateDateTime" id="hdnCreateDatetime_@Model[i].TaskId">
+                                    <input type="hidden" value="@Model[i].ModifiedDateTime" id="hdnModifiedDatetime_@Model[i].TaskId">
+                                    <input type="hidden" value="@Model[i].DeleteInd.ToString()" id="hdnDeleteInd_@Model[i].TaskId">
+                                    <input type="hidden" value="@Model[i].CompletedInd.ToString()" id="hdnCompleteInd_@Model[i].TaskId">
+                                    <input type="hidden" value="@impInd.ToString()" id="hdnImportantInd_@Model[i].TaskId">
+                                </a>
+                            </li>
+                        }
                     }
+
                 </ul>
-                    </div>
             </div>
-
-            <!--/todo-list-->
-
-            <div class="complete-list box">
-
-                <h2>Completed Tasks</h2>
-                <ul>
-                    <li>Task Name <button class="delete">Delete</button></li>
-
-                </ul>
+        </div>
 
 
-            </div><!--/complete-list-->
-
-
-        </section><!--/container-->
-
-
-
-    </div>
+    </section><!--/container-->
 
 </body>
 </html>
 <style>
-* {
-  box-sizing: border-box;
-}
+    * {
+        box-sizing: border-box;
+    }
 
-.container {
-    width: 100%;
-  background:#333;
-  padding:25px;
-  margin:25px auto;
-  overflow:hidden;
-  border-radius:10px;
-  border:4px solid #b1c9bb;
-  font-family: sans-serif;
-}
+    .container {
+        background: #e9ecef !important;
+        width: 100%;
+        max-width: 100% !important;
+        background: #333;
+        padding: 5px;
+        overflow: hidden;
+        border-radius: 10px;
+        font-family: sans-serif;
+    }
 
-h1, h2 {
-  margin:0;
-  text-align:center;
-  text-transform:uppercase;
+    h1, h2 {
+        margin: 0;
+        text-align: center;
+        text-transform: uppercase;
+    }
 
-}
+    h2 {
+        font-size: 20px;
+        text-align: center;
+        border-bottom: 1px solid #b1c9bb;
+        padding: 0 0 10px;
+        color: #57635c;
+    }
 
-h2 {
-  font-size:20px;
-  text-align:center;
-  border-bottom:1px solid #b1c9bb;
-  padding: 0 0 10px;
-  color:#57635c;
+    .new-task-container {
+        text-align: center;
+    }
 
-}
-
-.new-task-container {
-  text-align:center;
-}
-
-.box {
-  padding:10px 15px;
-  border:2px solid #b1c9bb;
-  border-radius:5px;
-  background:#FFF;
-  margin:15px 0;
-}
+    .box {
+        padding: 10px 15px;
+        border: 2px solid #b1c9bb;
+        border-radius: 5px;
+        margin: 15px 0;
+    }
 
 
-.todo-list {
-  float:left;
-  width:46%;
-}
+    .todo-list {
+        float: left;
+        width: 46%;
+    }
 
-.complete-list {
-  float:right;
-  width:46%;
-}
+    .complete-list {
+        float: right;
+        width: 46%;
+    }
 
-ul {
-  list-style:none;
-  padding:0;
-  margin:0;
-}
+    ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
 
-li{
-  padding:10px;
-  border-bottom:1px dotted #CCC;
-}
+    li {
+        padding: 10px;
+        border-bottom: 1px dotted #CCC;
+    }
 
-.delete {
-  float:right;
-}
+    .delete {
+        float: right;
+    }
 </style>
 
 <script>
-    //SELECT ELEMENTS AND ASSIGN THEM TO VARS
-var newTask = document.querySelector('#new-task');
-var addTaskBtn = document.querySelector('#addTask');
+    var newTask = document.querySelector('#new-task');
 
-var toDoUl = document.querySelector(".todo-list ul");
-var completeUl =  document.querySelector(".complete-list ul");
+var taskdescription = document.querySelector('#task-description');
+    var addTaskBtn = document.querySelector('#addTask');
 
-
-//CREATE FUNCTIONS
-
-//CREATING THE ACTUAL TASK LIST ITEM
-var createNewTask = function(task){
-  console.log("Creating task...");
-  
-  //SET UP THE NEW LIST ITEM
-  var listItem = document.createElement("li"); //<li>
-  var checkBox = document.createElement("input"); //checkbox
-  var label = document.createElement("label"); // <label>
-  
-  
-  //PULL THE INPUTED TEXT INTO LABEL
-  label.innerText = task;
-  
-  //ADD PROPERTIES
-  checkBox.type = "checkbox";
-  
-  //ADD ITEMS TO THE LI
-  listItem.appendChild(checkBox);
-  listItem.appendChild(label);
-  //EVERYTHING PUT TOGETHER
-  return listItem;  
-  
-};
-
-//ADD THE NEW TASK INTO ACTUAL INCOMPLETE LIST
-    var addTask = function () {
+    $("#logoutBtnCLick").click(function () {
         debugger;
-  //FOR CLARITY, GRAB THE INPUTTED TEXT AND STORE IT IN A VAR
-  var listItem = createNewTask(newTask.value);
-  //ADD THE NEW LIST ITEM TO LIST
-  toDoUl.appendChild(listItem); 
-  //CLEAR THE INPUT
+        $.ajax({
+            type: 'post',
+            url: '@Url.Action("MainPage")',
+            contentType: 'application/json; charset=utf-8',
+            success: function (result) {
+               $("#main-view-container").html(result);
+            }
+        });
 
+    })
+    $('#myModal').on('hidden.bs.modal', function () {
+        if (newTask.value == "") {
+            alert('Empty Task Cannot be Created!');
+            return false;
+        }
+        addUpdateTask(789,true,editMode);
+})
+
+    $("#completedTask").click(function () {
+        debugger;
+
+          var taskIds = [];
+        $.each($("input[name='taskchk']:checked"), function () {
+
+            if ( $("#hdnCompleteInd_" + $(this).val()).val() == "true") {
+                 $("#hdnCompleteInd_" + $(this).val()).val(false);
+             }
+             else
+                 $("#hdnCompleteInd_" + $(this).val()).val(true);
+                taskIds.push($(this).val());
+                addUpdateTask($(this).val());
+
+            });
+        if (taskIds.length < 1) {
+            $("#errorMessage").show();
+          setTimeout(function () { $("#errorMessage").hide(); }, 3000)
+        }
+
+    });
+     $("#deleteTask").click(function () {
+          var taskIds = [];
+
+         $.each($("input[name='taskchk']:checked"), function () {
+             if ($("#hdnDeleteInd_" + $(this).val()).val() == "true") {
+                $("#hdnDeleteInd_" + $(this).val()).val(false)
+             }
+             else
+                 $("#hdnDeleteInd_" + $(this).val()).val(true)
+                taskIds.push($(this).val());
+                addUpdateTask($(this).val());
+
+            });
+           if (taskIds.length < 1) {
+            $("#errorMessage").show();
+          setTimeout(function () { $("#errorMessage").hide(); }, 3000)
+        }
+
+     });
+     $("#importantTask").click(function () {
+          var taskIds = [];
+         $.each($("input[name='taskchk']:checked"), function () {
+             if ($("#hdnImportantInd_" + $(this).val()).val() == "true") {
+                 $("#hdnImportantInd_" + $(this).val()).val(false);
+             }
+             else
+                 $("#hdnImportantInd_" + $(this).val()).val(true);
+                taskIds.push($(this).val());
+                addUpdateTask($(this).val());
+            });
+         if (taskIds.length < 1) {
+             $("#errorMessage").show();
+             setTimeout(function () { $("#errorMessage").hide(); }, 3000)
+         }
+    });
+//ADD THE NEW TASK INTO ACTUAL INCOMPLETE LIST
+    var addUpdateTask = function (taskId, newTask = false, editMode = false) {
+  
+        debugger;
         var data = {
-        'TaskId': 980,
-        'TaskName': newTask.value,
-        'TaskDescription': "test",
-        'DeleteInd': true,
-        'Important': false,
-    }
+            'TaskId': taskId,
+            'TaskName': newTask == false ? $("#hdnTaskName_" + taskId).val() : $("#new-task").val(),
+            'TaskDescription': newTask == false ? $("#hdnTaskDescription_" + taskId).val() : $("#task-description").val(),
+            'DeleteInd': newTask == false ? $("#hdnDeleteInd_" + taskId).val() : false,
+            'ImportantInd': newTask == false ? $("#hdnImportantInd_" + taskId).val() : false,
+            'completedInd': newTask == false ?$("#hdnCompleteInd_" + taskId).val() : false,
+        }
+
+        $("#myModal").modal('hide');
         $.ajax({
             type: 'post',
             url: '@Url.Action("AddUpdateTask")',
@@ -195,86 +271,13 @@ var createNewTask = function(task){
             contentType: 'application/json; charset=utf-8',
             success: function (result) {
                 $("#main-container-login").html(result);
-                alert('Task Created Successfully');
             }
         });
-        
+
   newTask.value="";
   //BIND THE NEW LIST ITEM TO THE INCOMPLETE LIST
   //bindIncompleteItems(listItem, completeTask);
 
-};
+    };
 
-var completeTask = function(){
-  
-  //GRAB THE CHECKBOX'S PARENT ELEMENT, THE LI IT'S IN
-  var listItem = this.parentNode;
-  
-  //CREATE AND INSERT THE DELETE BUTTON
-  var deleteBtn = document.createElement("button"); // <button>
-  deleteBtn.innerText ="Delete"; 
-  deleteBtn.className = "delete";
-  listItem.appendChild(deleteBtn);
-  
-  //SELECT THE CHECKBOX FROM THE COMPLETED CHECKBOX AND REMOVE IT
-  var checkBox = listItem.querySelector("input[type=checkbox]");
-  checkBox.remove();
-  
-  //PLACE IT INSIDE THE COMPLETED LIST
-  completeUl.appendChild(listItem); 
-  
-  //BIND THE NEW COMPLETED LIST
-  bindCompleteItems(listItem, deleteTask);
-  
-};
-
-//DELETE TASK FUNCTIONS
-var deleteTask = function(){
-  console.log("Deleting task...");
-  
-  var listItem = this.parentNode;
-  var ul = listItem.parentNode;
-  
-  ul.removeChild(listItem);
-  
-};
-
-//A FUNCTION THAT BINDS EACH OF THE ELEMENTS THE INCOMPLETE LIST
-
-var bindIncompleteItems = function(taskItem, checkBoxClick){  
-  console.log("Binding the incomplete list...");
-  
-  //BIND THE CHECKBOX TO A VAR
-  var checkBox = taskItem.querySelector("input[type=checkbox]");
-  
-  //SETUP EVENT LISTENER FOR THE CHECKBOX
-  //checkBox.onchange = checkBoxClick;  
-}; 
-
-
-//A FUNCTIONM THAT BINDS EACH OF THE ELEMTS IN THE COMPLETE LIST
-var bindCompleteItems = function(taskItem, deleteButtonPress){
-  console.log("Binding the complete list...");
-  
-  //BIND THE DELETE BUTTON
-  var deleteButton = taskItem.querySelector(".delete");
-   
-  //WHEN THE DELETE BUTTIN IS PRESSED, RUN THE deleteTask function
-  deleteButton.onclick = deleteButtonPress;
-    
-};
-
-
-for(var i=0; i < toDoUl.children.length; i++) {
-  bindIncompleteItems(toDoUl.children[i], completeTask);
-}
-
-for(var i=0; i < completeUl.children.length; i++) {
-  bindCompleteItems(completeUl.children[i], deleteTask);
-}
-
-
-addTaskBtn.addEventListener("click", addTask);
-
-
-    </script>
+</script>

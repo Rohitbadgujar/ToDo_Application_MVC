@@ -101,8 +101,8 @@ C:\Users\rohit\source\repos\ToDoMVCApplication\ToDoMVCApplication\bin\System.Web
 C:\Users\rohit\source\repos\ToDoMVCApplication\ToDoMVCApplication\bin\Newtonsoft.Json.xml
 C:\Users\rohit\source\repos\ToDoMVCApplication\ToDoMVCApplication\bin\Antlr3.Runtime.pdb
 C:\Users\rohit\source\repos\ToDoMVCApplication\ToDoMVCApplication\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
-C:\Users\rohit\source\repos\ToDoMVCApplication\ToDoMVCApplication\obj\Debug\ToDoMVCApplication.csprojAssemblyReference.cache
 C:\Users\rohit\source\repos\ToDoMVCApplication\ToDoMVCApplication\obj\Debug\ToDoMVCApplication.csproj.CoreCompileInputs.cache
 C:\Users\rohit\source\repos\ToDoMVCApplication\ToDoMVCApplication\obj\Debug\ToDoMVCApplication.csproj.CopyComplete
 C:\Users\rohit\source\repos\ToDoMVCApplication\ToDoMVCApplication\obj\Debug\ToDoMVCApplication.dll
 C:\Users\rohit\source\repos\ToDoMVCApplication\ToDoMVCApplication\obj\Debug\ToDoMVCApplication.pdb
+C:\Users\rohit\source\repos\ToDoMVCApplication\ToDoMVCApplication\obj\Debug\ToDoMVCApplication.csprojAssemblyReference.cache

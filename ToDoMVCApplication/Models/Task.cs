@@ -14,6 +14,7 @@ namespace ToDoMVCApplication.Models
         public String CreateDateTime { get; set; }
         public String ModifiedDateTime { get; set; }
         public bool ImportantInd { get; set; }
+        public bool CompletedInd { get; set; }
 
     }
 }
