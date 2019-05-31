@@ -1,10 +1,9 @@
 ﻿@model ToDoMVCApplication.Models.User
-<div class="container-fluid">
+<div class="container-fluid" id="main-container-login">
     <div class="row">
         <div class="col-sm-4">
             <h2>Sign In to your account</h2>
-            @using (Html.BeginForm("SignIn", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
-            {
+           <form method="post" id="SignInForm">
                 <div class="form-group">
                     <label for="email">Username:</label>
                     @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", @id = "LoginUsername", @placeholder = "Enter Username", @name = "username" })
@@ -17,15 +16,14 @@
                     <input type="checkbox" class="custom-control-input" id="customCheck" name="example1">
                     <label class="custom-control-label" for="customCheck">Custom checkbox</label>
                 </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
-            }
+                <button type="submit" id="submitSignInForm" class="btn btn-primary">Submit</button>
+               </form>
         </div>
         <div class="col-sm-8">
 
             <div class="vl"></div>
             <h2>Sign Up to your account</h2>
-            @using (Html.BeginForm("SignUp", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
-            {
+            <form method="post" id="SignInForm">
                 <div class="form-group">
                     <label for="username">Username:</label>
                     @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", @id = "UsernameTxt", @placeholder = "Enter Username", @name = "username" })
@@ -42,10 +40,9 @@
                     @Html.TextBoxFor(m => m.Password, new { @class = "form-control", @id = "PasswordTxt", @placeholder = "Enter Password", @name = "passworld" })
                 </div>
                 <div class="form-group">
-                    <button type="submit" id="submitForm" class="btn btn-primary">Submit</button>
+                    <button type="submit" id="submitSignUpForm" class="btn btn-primary">Submit</button>
                 </div>
-
-            }
+                </form>
         </div>
     </div>
 </div>
@@ -59,26 +56,59 @@
 </style>
 <script type="text/javascript">
     $(document).ready(function () {
-     $("#submitForm").click(function (e) {
+     $("#submitSignUpForm").click(function (e) {
          e.preventDefault();
          debugger;
          var data = {
              'UserName': $('#UsernameTxt').val(),
              'Name': $('#NameTxt').val(),
              'EmailId': $('#EmailIdTxt').val(),
-             'Password': $('#PasswordTxt').val()
+             'Password': $('#PasswordTxt').val(),
+             'DeleteInd': 0,
          }
         $.ajax({
             type: 'post',
             url: '@Url.Action("SignUp", "Home")',
             data: JSON.stringify(data),
             contentType: 'application/json; charset=utf-8',
-            dataType: "json",
             success: function (result) {
                 alert('Account Details Created Successfully');
             }
         });
         });
     });
+    $("#submitSignInForm").click(function (e) {
+         e.preventDefault();
+         debugger;
+         var data = {
+             'UserName': $('#LoginUsername').val(),
+             'Password': $('#LoginPassword').val()
+         }
+        $.ajax({
+            type: 'post',
+            url: '@Url.Action("SignIn", "Home")',
+            data: JSON.stringify(data),
+            contentType: 'application/json; charset=utf-8',
+            success: function (result) {
+                debugger;
+                if (result.result == false)
+                    alert('Invalid Credentials');
+                else {
+                    $("#main-container-login").html(result);
+                }
+            }
+        });
+    });
+    function redirectToLoginPage(User) {
+        var data = User;
+        $.ajax({
+            type: 'post',
+            url: '@Url.Action("RedirectToLoginPage", "Home")',
+            data: JSON.stringify(data),
+            contentType: 'application/json; charset=utf-8',
+            dataType: "json",
+            
+        });
+    }
 
 </script>
