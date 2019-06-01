@@ -17,10 +17,10 @@ namespace ToDoMVCApplication.Controllers
         public static SQLiteConnection sqlite_conn;
         public ActionResult Index()
         {
-            sqlite_conn = new SQLiteConnection("Data Source=tododatabase.sqlite");
-            if (!System.IO.File.Exists("./tododatabase.sqlite"))
+            sqlite_conn = new SQLiteConnection("Data Source=tododatabasetest");
+            if (!System.IO.File.Exists("./tododatabasetest"))
             {
-                SQLiteConnection.CreateFile("./tododatabase.sqlite");
+                SQLiteConnection.CreateFile("./tododatabasetest");
             }
             CreateTable(sqlite_conn);
             ReadData(sqlite_conn);
@@ -28,10 +28,12 @@ namespace ToDoMVCApplication.Controllers
             return View();
         }
 
-        public ActionResult MainPage() {
+        public ActionResult MainPage()
+        {
             return View("Index");
         }
 
+        [HttpPost]
         public ActionResult SignUp(Models.User User)
         {
 
@@ -58,9 +60,10 @@ namespace ToDoMVCApplication.Controllers
 
                 }
             }
-           
+
             return Json(new { returnvalue = "true", alreadyExist = check });
         }
+        [HttpPost]
         public ActionResult SignIn(Models.User User)
         {
             try
@@ -91,16 +94,17 @@ namespace ToDoMVCApplication.Controllers
                     return PartialView("ToDoMainPage", tn);
                 }
             }
-            
+
             catch (SqlException e)
             {
                 Console.WriteLine(e.ToString());
                 sqlite_conn.Close();
             }
-            return Json(new {User, result = false}, JsonRequestBehavior.AllowGet);
+            return Json(new { User, result = false }, JsonRequestBehavior.AllowGet);
         }
 
-        public List<Task> GetAllTaskForLoggedInUser(int UserId) {
+        public List<Task> GetAllTaskForLoggedInUser(int UserId)
+        {
             List<Task> task = new List<Task>();
             sqlite_conn.Open();
             SQLiteCommand sqlite_cmd;
@@ -148,7 +152,7 @@ namespace ToDoMVCApplication.Controllers
             IEnumerable<Task> en = task;
             return task;
         }
-
+        [HttpPost]
         public ActionResult AddUpdateTask(Task task, int UserId = 1)
         {
             try
@@ -170,25 +174,27 @@ namespace ToDoMVCApplication.Controllers
                 {
                     updatetask(task);
                 }
-                else {
+                else
+                {
                     addNewTask(task, UserId);
                 }
-                }
-          
+            }
+
 
             catch (SqlException e)
             {
                 sqlite_conn.Close();
                 Console.WriteLine(e.ToString());
             }
-           // ReadTaskData(sqlite_conn);
+            // ReadTaskData(sqlite_conn);
             IEnumerable<Task> tn = GetAllTaskForLoggedInUser(UserId);
             ViewBag.UserName = Session["userName"] as String; ;
             return PartialView("ToDoMainPage", tn);
         }
 
 
-        static void updatetask(Task task) {
+        static void updatetask(Task task)
+        {
             sqlite_conn.Open();
             SQLiteCommand sqlite_cmd;
             sqlite_cmd = sqlite_conn.CreateCommand();
@@ -204,7 +210,6 @@ namespace ToDoMVCApplication.Controllers
             sqlite_cmd.ExecuteNonQuery();
             sqlite_conn.Close();
         }
-
         static void addNewTask(Task task, int UserId)
         {
             sqlite_conn.Open();
@@ -235,11 +240,13 @@ namespace ToDoMVCApplication.Controllers
                 sqlite_cmd.CommandText = CreatetableTask;
                 sqlite_cmd.ExecuteNonQuery();
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 Console.WriteLine(e.ToString());
                 sqlite_conn.Close();
             }
-            try {
+            try
+            {
                 string CreatetableUser = "CREATE TABLE  [Users] ( [Id] INTEGER PRIMARY KEY AUTOINCREMENT, [username] NCHAR(100) NOT NULL,[name]     NCHAR(100) NOT NULL,[emailId]  NCHAR(100) NOT NULL, [password] NCHAR(20)  NOT NULL,[deleteInd] BIT NOT NULL DEFAULT 0); ";
                 sqlite_cmd = conn.CreateCommand();
                 sqlite_cmd.CommandText = CreatetableUser;
@@ -293,7 +300,7 @@ namespace ToDoMVCApplication.Controllers
                 InsertTaskDummyRecord(conn);
             }
         }
-        static bool CheckIfUserExits(SQLiteConnection conn,  User user)
+        static bool CheckIfUserExits(SQLiteConnection conn, User user)
         {
             sqlite_conn.Open();
             SQLiteCommand sqlite_cmd;
@@ -317,7 +324,7 @@ namespace ToDoMVCApplication.Controllers
             {
                 return false;
             }
-    }
+        }
 
         static void InsertTaskDummyRecord(SQLiteConnection conn)
         {
@@ -330,15 +337,18 @@ namespace ToDoMVCApplication.Controllers
             sqlite_cmd.ExecuteNonQuery();
             conn.Close();
         }
-        static void InsertDummyRecord(SQLiteConnection conn) {
+        static void InsertDummyRecord(SQLiteConnection conn)
+        {
             //SQLiteDataReader sqlite_datareader;
             SQLiteCommand sqlite_cmd;
             conn.Open();
 
             sqlite_cmd = conn.CreateCommand();
-            sqlite_cmd.CommandText  = "insert into Users (name, username, emailId, password) values ('Rohit','Tyson','rohit@gmail.com','1234');insert into Users (name, username, emailId, password) values ('Rohit2','Tyson2','rohit@gmail.com','1234');";
+            sqlite_cmd.CommandText = "insert into Users (name, username, emailId, password) values ('Rohit','test','rohit@gmail.com','pwd123');insert into Users (name, username, emailId, password) values ('Rohit2','admin','rohit@gmail.com','1234');";
             sqlite_cmd.ExecuteNonQuery();
             conn.Close();
         }
+
     }
+
 }

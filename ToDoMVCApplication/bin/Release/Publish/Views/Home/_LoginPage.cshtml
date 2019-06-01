@@ -1,23 +1,41 @@
 ﻿@model ToDoMVCApplication.Models.User
+<div style="padding:0px" class="jumbotron">
+    <h4>TO DO Application</h4>
+</div>
 <div class="container-fluid" id="main-container-login">
-    <div class="row">
+    <!-- Modal -->
+    <div class="modal fade" id="successMessageModal" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" style="float:left">k</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <label>New User/Task Created Successfully</label>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Save and Close</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="row" style="    font-size: 25px;">
         <div class="col-sm-4">
             <h2>Sign In to your account</h2>
-           <form method="post" id="SignInForm">
+            <form method="post" id="SignInForm">
                 <div class="form-group">
                     <label for="email">Username:</label>
-                    @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", @id = "LoginUsername", @placeholder = "Enter Username", @name = "username" })
+                    @Html.TextBoxFor(m => m.UserName, new { @maxlength = "40", @require = "true", @class = "form-control", @id = "LoginUsername", @placeholder = "Enter Username", @name = "username" })
                 </div>
                 <div class="form-group">
                     <label for="pwd">Password:</label>
-                    @Html.TextBoxFor(m => m.Password, new { @class = "form-control", @id = "LoginPassword", @placeholder = "Enter Password", @name = "passworld" })
-                </div>
-                <div class="custom-control form-group form-check custom-checkbox mb-3">
-                    <input type="checkbox" class="custom-control-input" id="customCheck" name="example1">
-                    <label class="custom-control-label" for="customCheck">Custom checkbox</label>
+                    @Html.TextBoxFor(m => m.Password, new { @type = "password", @class = "form-control", @require = "true", @id = "LoginPassword", @placeholder = "Enter Password", @name = "passworld" })
                 </div>
                 <button type="submit" id="submitSignInForm" class="btn btn-primary">Submit</button>
-               </form>
+            </form>
         </div>
         <div class="col-sm-8">
 
@@ -26,23 +44,23 @@
             <form method="post" id="SignInForm">
                 <div class="form-group">
                     <label for="username">Username:</label>
-                    @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", @id = "UsernameTxt", @placeholder = "Enter Username", @name = "username" })
+                    @Html.TextBoxFor(m => m.UserName, new { @maxlength = "40", @require = "true", @class = "form-control", @id = "UsernameTxt", @placeholder = "Enter Username", @name = "username" })
 
                 </div>
                 <div class="form-group">
                     <label for="username">Name:</label>
-                    @Html.TextBoxFor(m => m.Name, new { @class = "form-control", @id = "NameTxt", @placeholder = "Enter Name", @name = "name" })
+                    @Html.TextBoxFor(m => m.Name, new { @maxlength = "40", @require = "true", @class = "form-control", @id = "NameTxt", @placeholder = "Enter Name", @name = "name" })
                 </div>
                 <label for="email">Email:</label>
-                @Html.TextBoxFor(m => m.EmailId, new { @type = "email", @class = "form-control", @id = "EmailIdTxt", @placeholder = "Enter EmailId", @name = "emailId" })
+                @Html.TextBoxFor(m => m.EmailId, new { @maxlength = "40", @type = "email", @require = "true", @class = "form-control", @id = "EmailIdTxt", @placeholder = "Enter EmailId", @name = "emailId" })
                 <div class="form-group">
                     <label for="pwd">Password:</label>
-                    @Html.TextBoxFor(m => m.Password, new { @class = "form-control", @id = "PasswordTxt", @placeholder = "Enter Password", @name = "passworld" })
+                    @Html.TextBoxFor(m => m.Password, new { @type = "password", @maxlength = "40", @class = "form-control", @require = "true", @id = "PasswordTxt", @placeholder = "Enter Password", @name = "passworld" })
                 </div>
                 <div class="form-group">
                     <button type="submit" id="submitSignUpForm" class="btn btn-primary">Submit</button>
                 </div>
-                </form>
+            </form>
         </div>
     </div>
 </div>
@@ -56,9 +74,13 @@
 </style>
 <script type="text/javascript">
     $(document).ready(function () {
+        //Sign Up function
      $("#submitSignUpForm").click(function (e) {
          e.preventDefault();
-         debugger;
+         if ($('#UsernameTxt').val() == "" || $('#NameTxt').val() == "" || $('#EmailIdTxt').val() == "" || $('#PasswordTxt').val() == "") {
+            alert('Enter all the details');
+             return false;
+         }
          var data = {
              'UserName': $('#UsernameTxt').val(),
              'Name': $('#NameTxt').val(),
@@ -72,14 +94,20 @@
             data: JSON.stringify(data),
             contentType: 'application/json; charset=utf-8',
             success: function (result) {
-                alert('Account Details Created Successfully');
+                if (result.alreadyExist) {
+                    alert("User with same Username or EmailId already Exists");
+                }
+                else {
+                    alert("Account Successfully Created! Please Login with your UserName and Password")
+                    $("input[type=text]").val("");
+                }
             }
         });
         });
     });
+    //Sign in function
     $("#submitSignInForm").click(function (e) {
          e.preventDefault();
-         debugger;
          var data = {
              'UserName': $('#LoginUsername').val(),
              'Password': $('#LoginPassword').val()
@@ -90,7 +118,6 @@
             data: JSON.stringify(data),
             contentType: 'application/json; charset=utf-8',
             success: function (result) {
-                debugger;
                 if (result.result == false)
                     alert('Invalid Credentials');
                 else {
@@ -99,16 +126,10 @@
             }
         });
     });
-    function redirectToLoginPage(User) {
-        var data = User;
-        $.ajax({
-            type: 'post',
-            url: '@Url.Action("RedirectToLoginPage", "Home")',
-            data: JSON.stringify(data),
-            contentType: 'application/json; charset=utf-8',
-            dataType: "json",
-            
-        });
-    }
 
 </script>
+<style>
+    .form-control {
+        height: calc(1.5em + .75rem + 20px) !important;
+    }
+</style>

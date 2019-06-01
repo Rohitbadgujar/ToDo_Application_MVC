@@ -17,6 +17,7 @@
                     <div class="modal-body">
                         <label>Task Created Successfully</label>
                     </div>
+                    </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Save and Close</button>
                     </div>
@@ -238,23 +239,9 @@
     var editMode = false;
 var taskdescription = document.querySelector('#task-description');
     var addTaskBtn = document.querySelector('#addTask');
-    $("#taskEdit").click(function () {
 
-        $('#myModal').modal('show');
-
-    })
-    $('#myModal').on('show.bs.modal', function (event) {
-        debugger;
-        var button = $(event.relatedTarget) // Button that triggered the modal
-        var recipient = button.data('whatever') // Extract info from data-* attributes
-        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-        var modal = $(this)
-        modal.find('.modal-title').text('New message to ' + recipient)
-        modal.find('.modal-body input').val(recipient)
-    });
+    //Logout Button Click event
     $("#logoutBtnCLick").click(function () {
-        debugger;
         $.ajax({
             type: 'post',
             url: '@Url.Action("MainPage")',
@@ -274,8 +261,6 @@ var taskdescription = document.querySelector('#task-description');
 })
 
     $("#completedTask").click(function () {
-        debugger;
-
           var taskIds = [];
         $.each($("input[name='taskchk']:checked"), function () {
 
@@ -331,8 +316,6 @@ var taskdescription = document.querySelector('#task-description');
     });
 //ADD THE NEW TASK INTO ACTUAL INCOMPLETE LIST
     var addUpdateTask = function (taskId, newTask = false, editMode = false) {
-  
-        debugger;
         var data = {
             'TaskId': taskId,
             'TaskName': newTask == false ? $("#hdnTaskName_" + taskId).val() : $("#new-task").val(),
@@ -365,7 +348,6 @@ var taskdescription = document.querySelector('#task-description');
   filter = input.value.toUpperCase();
   ul = document.getElementById("myUL");
   li = ul.getElementsByTagName('li');
-        debugger;
   // Loop through all list items, and hide those who don't match the search query
   for (i = 0; i < li.length; i++) {
     a = li[i].getElementsByTagName("h3")[0];

@@ -13,7 +13,7 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                            <label>New User/Task Created Successfully</label>
+                    <label>New User/Task Created Successfully</label>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Save and Close</button>
@@ -28,11 +28,11 @@
             <form method="post" id="SignInForm">
                 <div class="form-group">
                     <label for="email">Username:</label>
-                    @Html.TextBoxFor(m => m.UserName, new { @maxlength="40",@require = "true", @class = "form-control", @id = "LoginUsername", @placeholder = "Enter Username", @name = "username" })
+                    @Html.TextBoxFor(m => m.UserName, new { @maxlength = "40", @require = "true", @class = "form-control", @id = "LoginUsername", @placeholder = "Enter Username", @name = "username" })
                 </div>
                 <div class="form-group">
                     <label for="pwd">Password:</label>
-                    @Html.TextBoxFor(m => m.Password, new {@type="password", @class = "form-control",@require = "true", @id = "LoginPassword", @placeholder = "Enter Password", @name = "passworld" })
+                    @Html.TextBoxFor(m => m.Password, new { @type = "password", @class = "form-control", @require = "true", @id = "LoginPassword", @placeholder = "Enter Password", @name = "passworld" })
                 </div>
                 <button type="submit" id="submitSignInForm" class="btn btn-primary">Submit</button>
             </form>
@@ -44,18 +44,18 @@
             <form method="post" id="SignInForm">
                 <div class="form-group">
                     <label for="username">Username:</label>
-                    @Html.TextBoxFor(m => m.UserName, new {@maxlength="40",@require = "true", @class = "form-control", @id = "UsernameTxt", @placeholder = "Enter Username", @name = "username" })
+                    @Html.TextBoxFor(m => m.UserName, new { @maxlength = "40", @require = "true", @class = "form-control", @id = "UsernameTxt", @placeholder = "Enter Username", @name = "username" })
 
                 </div>
                 <div class="form-group">
                     <label for="username">Name:</label>
-                    @Html.TextBoxFor(m => m.Name, new {@maxlength="40",@require = "true" ,  @class = "form-control", @id = "NameTxt", @placeholder = "Enter Name", @name = "name" })
+                    @Html.TextBoxFor(m => m.Name, new { @maxlength = "40", @require = "true", @class = "form-control", @id = "NameTxt", @placeholder = "Enter Name", @name = "name" })
                 </div>
                 <label for="email">Email:</label>
-                @Html.TextBoxFor(m => m.EmailId, new {@maxlength="40", @type = "email",@require = "true", @class = "form-control", @id = "EmailIdTxt", @placeholder = "Enter EmailId", @name = "emailId" })
+                @Html.TextBoxFor(m => m.EmailId, new { @maxlength = "40", @type = "email", @require = "true", @class = "form-control", @id = "EmailIdTxt", @placeholder = "Enter EmailId", @name = "emailId" })
                 <div class="form-group">
                     <label for="pwd">Password:</label>
-                    @Html.TextBoxFor(m => m.Password, new {@type="password",@maxlength="40", @class = "form-control",@require = "true", @id = "PasswordTxt", @placeholder = "Enter Password", @name = "passworld" })
+                    @Html.TextBoxFor(m => m.Password, new { @type = "password", @maxlength = "40", @class = "form-control", @require = "true", @id = "PasswordTxt", @placeholder = "Enter Password", @name = "passworld" })
                 </div>
                 <div class="form-group">
                     <button type="submit" id="submitSignUpForm" class="btn btn-primary">Submit</button>
@@ -74,6 +74,7 @@
 </style>
 <script type="text/javascript">
     $(document).ready(function () {
+        //Sign Up function  
      $("#submitSignUpForm").click(function (e) {
          e.preventDefault();
          if ($('#UsernameTxt').val() == "" || $('#NameTxt').val() == "" || $('#EmailIdTxt').val() == "" || $('#PasswordTxt').val() == "") {
@@ -104,6 +105,7 @@
         });
         });
     });
+    //Sign in function
     $("#submitSignInForm").click(function (e) {
          e.preventDefault();
          var data = {
@@ -124,21 +126,10 @@
             }
         });
     });
-    function redirectToLoginPage(User) {
-        var data = User;
-        $.ajax({
-            type: 'post',
-            url: '@Url.Action("RedirectToLoginPage", "Home")',
-            data: JSON.stringify(data),
-            contentType: 'application/json; charset=utf-8',
-            dataType: "json",
-
-        });
-    }
 
 </script>
 <style>
     .form-control {
-    height: calc(1.5em + .75rem + 20px)!important;
+        height: calc(1.5em + .75rem + 20px) !important;
     }
 </style>

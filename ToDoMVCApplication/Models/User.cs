@@ -13,5 +13,6 @@ namespace ToDoMVCApplication.Models
         public String EmailId { get; set; }
         public String Password { get; set; }
         public bool DeleteInd { get; set; }
+        public List<Task> Tasks { get; set; }
     }
 }

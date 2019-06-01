@@ -238,10 +238,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>11/28/2018 12:04:24</publishTime>
     </File>
     <File Include="bin/ToDoMVCApplication.dll">
-      <publishTime>05/31/2019 14:53:59</publishTime>
+      <publishTime>06/01/2019 02:00:50</publishTime>
     </File>
     <File Include="bin/ToDoMVCApplication.pdb">
-      <publishTime>05/31/2019 14:53:59</publishTime>
+      <publishTime>06/01/2019 02:00:50</publishTime>
     </File>
     <File Include="bin/WebGrease.dll">
       <publishTime>01/23/2014 12:57:34</publishTime>
@@ -367,22 +367,22 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/29/2019 13:02:54</publishTime>
     </File>
     <File Include="Views/Home/Index.cshtml">
-      <publishTime>05/31/2019 02:27:39</publishTime>
+      <publishTime>05/31/2019 22:44:27</publishTime>
     </File>
     <File Include="Views/Home/ToDoMain.cshtml">
       <publishTime>05/30/2019 13:38:21</publishTime>
     </File>
     <File Include="Views/Home/ToDoMainPage.cshtml">
-      <publishTime>05/31/2019 14:36:21</publishTime>
+      <publishTime>01/06/2019 01:42:36</publishTime>
     </File>
     <File Include="Views/Home/_LoginPage.cshtml">
-      <publishTime>05/31/2019 02:29:25</publishTime>
+      <publishTime>01/06/2019 01:43:31</publishTime>
     </File>
     <File Include="Views/Shared/Error.cshtml">
       <publishTime>05/29/2019 13:02:42</publishTime>
     </File>
     <File Include="Views/Shared/_Layout.cshtml">
-      <publishTime>05/31/2019 14:28:04</publishTime>
+      <publishTime>05/31/2019 22:58:34</publishTime>
     </File>
     <File Include="Views/Web.config">
       <publishTime>05/29/2019 13:02:42</publishTime>
