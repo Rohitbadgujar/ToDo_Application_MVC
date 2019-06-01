@@ -17,11 +17,13 @@ namespace ToDoMVCApplication.Controllers
         public static SQLiteConnection sqlite_conn;
         public ActionResult Index()
         {
-            sqlite_conn = new SQLiteConnection("Data Source=tododatabasetest");
-            if (!System.IO.File.Exists("./tododatabasetest"))
+            var dbPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory.ToString(), "tododatabasetest");
+            
+            if (!System.IO.File.Exists("dbPath"))
             {
-                SQLiteConnection.CreateFile("./tododatabasetest");
+                SQLiteConnection.CreateFile(dbPath);
             }
+            sqlite_conn = new SQLiteConnection("Data Source=" + dbPath);
             CreateTable(sqlite_conn);
             ReadData(sqlite_conn);
             ReadTaskData(sqlite_conn);
