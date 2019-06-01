@@ -34,38 +34,32 @@ namespace ToDoMVCApplication.Controllers
 
         public ActionResult SignUp(Models.User User)
         {
-            try
+
+            bool check = CheckIfUserExits(sqlite_conn, User);
+            if (!check)
             {
-
-                SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
-                builder.DataSource = "(localdb)\\MSSQLLocalDB";
-                builder.UserID = "";
-                builder.Password = "";
-                builder.InitialCatalog = "tododb";
-
-                using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+                try
                 {
-                    {
-                        String sql = "Insert INTO Users (username,name,emailid,password) values (@username,@name,@emailId,@password)";
+                    sqlite_conn.Open();
+                    SQLiteCommand sqlite_cmd;
+                    sqlite_cmd = sqlite_conn.CreateCommand();
+                    String sql = "Insert INTO Users (username,name,emailid,password) values (@username,@name,@emailId,@password)";
+                    sqlite_cmd.Parameters.AddWithValue("@username", User.UserName);
+                    sqlite_cmd.Parameters.AddWithValue("@name", User.Name);
+                    sqlite_cmd.Parameters.AddWithValue("@emailId", User.EmailId);
+                    sqlite_cmd.Parameters.AddWithValue("@password", User.Password);
+                    sqlite_cmd.CommandText = sql;
+                    sqlite_cmd.ExecuteNonQuery();
+                    sqlite_conn.Close();
+                }
+                catch (SqlException e)
+                {
+                    Console.WriteLine(e.ToString());
 
-                        using (SqlCommand command = new SqlCommand(sql, connection))
-                        {
-                            connection.Open();
-                            command.Parameters.AddWithValue("@username", User.UserName);
-                            command.Parameters.AddWithValue("@name", User.Name);
-                            command.Parameters.AddWithValue("@emailId", User.EmailId);
-                            command.Parameters.AddWithValue("@password", User.Password);
-                            command.ExecuteNonQuery();
-                        }
-                    }
                 }
             }
-            catch (SqlException e)
-            {
-                Console.WriteLine(e.ToString());
-                
-            }
-            return Json(new { returnvalue = "true" });
+           
+            return Json(new { returnvalue = "true", alreadyExist = check });
         }
         public ActionResult SignIn(Models.User User)
         {
@@ -92,7 +86,8 @@ namespace ToDoMVCApplication.Controllers
                     User.EmailId = ds.Tables[0].Rows[0]["EmailId"].ToString();
                     User.Id = Convert.ToInt32(ds.Tables[0].Rows[0]["Id"].ToString());
                     IEnumerable<Task> tn = GetAllTaskForLoggedInUser(User.Id);
-                    ViewBag.UserName = User.Name;
+                    Session["userName"] = User.Name;
+                    ViewBag.UserName = Session["userName"] as String;
                     return PartialView("ToDoMainPage", tn);
                 }
             }
@@ -108,30 +103,6 @@ namespace ToDoMVCApplication.Controllers
         public List<Task> GetAllTaskForLoggedInUser(int UserId) {
             List<Task> task = new List<Task>();
             sqlite_conn.Open();
-            //String sql = "Select * from Task WHERE userId = @UserId";
-            
-            //using (SQLiteCommand cmd = new SQLiteCommand(sql, sqlite_conn))
-            //{
-            //    cmd.Parameters.AddWithValue("@UserId", UserId);
-            //    using (SQLiteDataReader rdr = cmd.ExecuteReader())
-            //    {
-            //        while (rdr.Read())
-            //        {
-            //            task.Add(new Task
-            //            {
-            //                TaskId = Convert.ToInt32(rdr["Id"]),
-            //                TaskDescription = Convert.ToString(rdr["TaskDescription"]),
-            //                TaskName = Convert.ToString(rdr["TaskName"]),
-            //                DeleteInd = Convert.ToBoolean(rdr["deleteInd"]),
-            //                ImportantInd = Convert.ToBoolean(rdr["importantInd"]),
-            //                ModifiedDateTime = Convert.ToDateTime(rdr["modifiedDateTime"]),
-            //                CreateDateTime = Convert.ToDateTime(rdr["createdDateTime"]),
-            //            });
-                        
-            //        }
-            //    }
-            //}
-
             SQLiteCommand sqlite_cmd;
             sqlite_cmd = sqlite_conn.CreateCommand();
             //String sql = "Select * from Task WHERE userId = @UserId";
@@ -212,6 +183,7 @@ namespace ToDoMVCApplication.Controllers
             }
            // ReadTaskData(sqlite_conn);
             IEnumerable<Task> tn = GetAllTaskForLoggedInUser(UserId);
+            ViewBag.UserName = Session["userName"] as String; ;
             return PartialView("ToDoMainPage", tn);
         }
 
@@ -224,7 +196,7 @@ namespace ToDoMVCApplication.Controllers
             sqlite_cmd.Parameters.AddWithValue("@taskId", task.TaskId);
             sqlite_cmd.Parameters.AddWithValue("@taskName", task.TaskName);
             sqlite_cmd.Parameters.AddWithValue("@description", task.TaskDescription);
-            sqlite_cmd.Parameters.AddWithValue("@modifiedDate", task.ModifiedDateTime);
+            sqlite_cmd.Parameters.AddWithValue("@modifiedDate", DateTime.Now.ToString());
             sqlite_cmd.Parameters.AddWithValue("@DeleteInd", task.DeleteInd);
             sqlite_cmd.Parameters.AddWithValue("@importantInd", task.ImportantInd);
             sqlite_cmd.Parameters.AddWithValue("@completedInd", task.CompletedInd);
@@ -258,7 +230,7 @@ namespace ToDoMVCApplication.Controllers
             SQLiteCommand sqlite_cmd;
             try
             {
-                string CreatetableTask = "DROP TABLE TASK; CREATE Table [Task] ([Id] INTEGER PRIMARY KEY AUTOINCREMENT, [name] TEXT NOT NULL, [description] TEXT NULL , [createddatetime] TEXT NULL , [modifieddatetime] TEXT NULL , [deleteInd] NUMERIC NOT NULL , [importantInd] NUMERIC NOT NULL ,[completedInd] NUMERIC NOT NULL,  [userId] INTEGER NOT NULL)";
+                string CreatetableTask = "CREATE Table [Task] ([Id] INTEGER PRIMARY KEY AUTOINCREMENT, [name] TEXT NOT NULL, [description] TEXT NULL , [createddatetime] TEXT NULL , [modifieddatetime] TEXT NULL , [deleteInd] NUMERIC NOT NULL , [importantInd] NUMERIC NOT NULL ,[completedInd] NUMERIC NOT NULL,  [userId] INTEGER NOT NULL)";
                 sqlite_cmd = conn.CreateCommand();
                 sqlite_cmd.CommandText = CreatetableTask;
                 sqlite_cmd.ExecuteNonQuery();
@@ -321,6 +293,31 @@ namespace ToDoMVCApplication.Controllers
                 InsertTaskDummyRecord(conn);
             }
         }
+        static bool CheckIfUserExits(SQLiteConnection conn,  User user)
+        {
+            sqlite_conn.Open();
+            SQLiteCommand sqlite_cmd;
+            sqlite_cmd = sqlite_conn.CreateCommand();
+            String sql = "Select * from Users WHERE username = @username or emailId = @emailId";
+
+            DataSet ds = new DataSet();
+            sqlite_cmd.CommandText = sql;
+            sqlite_cmd.Parameters.AddWithValue("@username", user.UserName);
+            sqlite_cmd.Parameters.AddWithValue("@emailId", user.EmailId);
+            SQLiteDataAdapter da = new SQLiteDataAdapter(sqlite_cmd);
+
+            da.Fill(ds);
+            sqlite_conn.Close();
+            bool exitsInd = ((ds.Tables.Count > 0) && (ds.Tables[0].Rows.Count > 0));
+            if (exitsInd)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+    }
 
         static void InsertTaskDummyRecord(SQLiteConnection conn)
         {

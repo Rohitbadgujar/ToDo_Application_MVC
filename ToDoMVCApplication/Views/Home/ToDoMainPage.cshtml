@@ -1,9 +1,47 @@
 ﻿
 @model List<ToDoMVCApplication.Models.Task>
-
+@{
+    string userName = ViewBag.UserName;
+}
 <html lang="en">
 <body>
     <div class="container">
+        <div class="modal fade" id="successMessageModalTask" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" style="float:left">k</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <label>Task Created Successfully</label>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Save and Close</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="modal fade" id="errorMessageModalTask" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" style="float:left">k</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <label>Please enter Task name and Description</label>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Save and Close</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
         <!-- Trigger the modal with a button -->
         <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Add New Task</button>
         <p style="float:right;    padding-right: 71px;">
@@ -43,21 +81,17 @@
     </div>
     <section class="container">
 
-        <div class="todo-list box" style="height:536px;width:95%">
+        <div class="todo-list box" style="height:536px;width:95%;overflow: scroll;">
             <div class="button-header" style="width:100%;height:13%">
                 <button type="button" id="completedTask" style="background-color: limegreen !important;color: black;" class="btn btn-outline-primary">Complete Task</button>
                 <button type="button" id="importantTask" style="background-color: chocolate !important;color: black;" class="btn btn-outline-secondary">Important</button>
                 <button type="button" id="deleteTask" style="background-color: red !important;color: black;" class="btn btn-outline-success">Delete</button>
                 <label id="errorMessage" style="display:none;color: red !important;">Please select Task to update</label>
-                <p style="float:right;padding-right:20px">
-                    <a href="#" class="btn btn-info btn-lg">
-                        <span class="glyphicon glyphicon-edit"></span> Edit
-                    </a>
-                </p>
-                <h2>Incomplete Tasks</h2>
+                <input style="float:right;margin-right: 13px;" type="text" id="myInput" onkeyup="myFunction()" placeholder="Search Task">
+                <h2>Task Details for User : @userName</h2>
             </div>
             <div class="list-group">
-                <ul>
+                <ul id="myUL">
                     @for (int i = 0; i < Model.Count; i++)
                     {
                         var importantTask = "";
@@ -68,7 +102,7 @@
                             if (Model[i].ImportantInd == true)
                             {
                                 impInd = "true";
-                                importantTask = "<span style='float:right;color:orangered' class='badge'>Important</span>";
+                                importantTask = "<span style='float:right;color:orangered;font-size: 15px;' class='badge'>Important</span>";
                             }
                             if (Model[i].CompletedInd == true)
                             {
@@ -76,9 +110,9 @@
                             }
                             <li>
                                 <a href="#" id="TaskList" style="background-color:steelblue; !important;height:110px" class="list-group-item">
-                                    <h5 class="list-group-item-heading" style="color:burlywood ;"><input value="@Model[i].TaskId" name="taskchk" type="checkbox"><label style="@Html.Raw(style)">@Model[i].TaskName</label> @Html.Raw(@importantTask)</h5>
-                                    <h6 class="list-group-item-text"><label style="@Html.Raw(style)">@Model[i].TaskDescription</label></h6>
-                                    <label style="float:right">Last Modified on @Model[i].CreateDateTime</label>
+                                    <h3 class="list-group-item-heading" style="color:burlywood ;"><input value="@Model[i].TaskId" name="taskchk" type="checkbox"><label style="@Html.Raw(style)">@Model[i].TaskName</label> @Html.Raw(@importantTask)</h3>
+                                    <h5 class="list-group-item-text"><label style="@Html.Raw(style)">@Model[i].TaskDescription</label></h5>
+                                    <label style="float:right">Last Modified on @Model[i].ModifiedDateTime</label>
                                     <input type="hidden" value="@Model[i].TaskName" id="hdnTaskName_@Model[i].TaskId">
                                     <input type="hidden" value="@Model[i].TaskDescription" id="hdnTaskDescription_@Model[i].TaskId">
                                     <input type="hidden" value="@Model[i].CreateDateTime" id="hdnCreateDatetime_@Model[i].TaskId">
@@ -101,6 +135,37 @@
 </body>
 </html>
 <style>
+    #myInput {
+  background-position: 10px 12px; /* Position the search icon */
+  background-repeat: no-repeat; /* Do not repeat the icon image */
+  width: 100%; /* Full-width */
+  font-size: 16px; /* Increase font-size */
+  padding: 12px 20px 12px 40px; /* Add some padding */
+  border: 1px solid #ddd; /* Add a grey border */
+  margin-bottom: 12px; /* Add some space below the input */
+}
+
+#myUL {
+  /* Remove default list styling */
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+#myUL li a {
+  border: 1px solid #ddd; /* Add a border to all links */
+  margin-top: -1px; /* Prevent double borders */
+  background-color: #f6f6f6; /* Grey background color */
+  padding: 12px; /* Add some padding */
+  text-decoration: none; /* Remove default text underline */
+  font-size: 11px; /* Increase the font-size */
+  color: black; /* Add a black text color */
+  display: block; /* Make it into a block element to fill the whole list */
+}
+
+#myUL li a:hover:not(.header) {
+  background-color: #eee; /* Add a hover effect to all links, except for headers */
+}
     * {
         box-sizing: border-box;
     }
@@ -170,10 +235,24 @@
 
 <script>
     var newTask = document.querySelector('#new-task');
-
+    var editMode = false;
 var taskdescription = document.querySelector('#task-description');
     var addTaskBtn = document.querySelector('#addTask');
+    $("#taskEdit").click(function () {
 
+        $('#myModal').modal('show');
+
+    })
+    $('#myModal').on('show.bs.modal', function (event) {
+        debugger;
+        var button = $(event.relatedTarget) // Button that triggered the modal
+        var recipient = button.data('whatever') // Extract info from data-* attributes
+        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+        var modal = $(this)
+        modal.find('.modal-title').text('New message to ' + recipient)
+        modal.find('.modal-body input').val(recipient)
+    });
     $("#logoutBtnCLick").click(function () {
         debugger;
         $.ajax({
@@ -188,10 +267,10 @@ var taskdescription = document.querySelector('#task-description');
     })
     $('#myModal').on('hidden.bs.modal', function () {
         if (newTask.value == "") {
-            alert('Empty Task Cannot be Created!');
+            $("#errorMessageModalTask").modal('show');
             return false;
         }
-        addUpdateTask(789,true,editMode);
+        addUpdateTask(789, true, editMode);
 })
 
     $("#completedTask").click(function () {
@@ -200,7 +279,7 @@ var taskdescription = document.querySelector('#task-description');
           var taskIds = [];
         $.each($("input[name='taskchk']:checked"), function () {
 
-            if ( $("#hdnCompleteInd_" + $(this).val()).val() == "true") {
+            if ($("#hdnCompleteInd_" + $(this).val()).val().toLowerCase() == "true") {
                  $("#hdnCompleteInd_" + $(this).val()).val(false);
              }
              else
@@ -219,7 +298,7 @@ var taskdescription = document.querySelector('#task-description');
           var taskIds = [];
 
          $.each($("input[name='taskchk']:checked"), function () {
-             if ($("#hdnDeleteInd_" + $(this).val()).val() == "true") {
+             if ($("#hdnDeleteInd_" + $(this).val()).val().toLowerCase() == "true") {
                 $("#hdnDeleteInd_" + $(this).val()).val(false)
              }
              else
@@ -237,7 +316,7 @@ var taskdescription = document.querySelector('#task-description');
      $("#importantTask").click(function () {
           var taskIds = [];
          $.each($("input[name='taskchk']:checked"), function () {
-             if ($("#hdnImportantInd_" + $(this).val()).val() == "true") {
+             if ($("#hdnImportantInd_" + $(this).val()).val().toLowerCase() == "true") {
                  $("#hdnImportantInd_" + $(this).val()).val(false);
              }
              else
@@ -279,5 +358,24 @@ var taskdescription = document.querySelector('#task-description');
   //bindIncompleteItems(listItem, completeTask);
 
     };
+    function myFunction() {
+  // Declare variables
+  var input, filter, ul, li, a, i, txtValue;
+  input = document.getElementById('myInput');
+  filter = input.value.toUpperCase();
+  ul = document.getElementById("myUL");
+  li = ul.getElementsByTagName('li');
+        debugger;
+  // Loop through all list items, and hide those who don't match the search query
+  for (i = 0; i < li.length; i++) {
+    a = li[i].getElementsByTagName("h3")[0];
+    txtValue = a.textContent || a.innerText;
+    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+      li[i].style.display = "";
+    } else {
+      li[i].style.display = "none";
+    }
+  }
+}
 
 </script>
