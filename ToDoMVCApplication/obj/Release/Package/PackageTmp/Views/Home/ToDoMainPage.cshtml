@@ -6,45 +6,9 @@
 <html lang="en">
 <body>
     <div class="container">
-        <div class="modal fade" id="successMessageModalTask" role="dialog">
-            <div class="modal-dialog">
-                <!-- Modal content-->
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title" style="float:left">k</h4>
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    </div>
-                    <div class="modal-body">
-                        <label>Task Created Successfully</label>
-                    </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Save and Close</button>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-        <div class="modal fade" id="errorMessageModalTask" role="dialog">
-            <div class="modal-dialog">
-                <!-- Modal content-->
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title" style="float:left">k</h4>
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    </div>
-                    <div class="modal-body">
-                        <label>Please enter Task name and Description</label>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Save and Close</button>
-                    </div>
-                </div>
-
-            </div>
-        </div>
         <!-- Trigger the modal with a button -->
-        <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Add New Task</button>
+        <button type="button" id="addNewTask" class="btn btn-info btn-lg">Add New Task</button>
+        <label id="successMessage" class="alert alert-success" style="display:none;color: black !important;"><strong>Well done!</strong> You successfully inserted/updated the Task</a>.</label>
         <p style="float:right;    padding-right: 71px;">
             <a href="#" id="logoutBtnCLick" class="btn btn-info btn-lg">
                 <span class="glyphicon glyphicon-log-out"></span> Log out
@@ -57,10 +21,11 @@
                 <!-- Modal content-->
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title" style="float:left">Add New Task</h4>
+                        <h4 class="modal-title" style="float:left">Add/Edit New Task</h4>
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
                     <div class="modal-body">
+                        <label id="errorMessageTask" class="alert alert-danger" style="display:none;color: red !important;">Please Enter Valid Task Name!</label>
                         <form>
                             <div class="form-group">
                                 <label for="new-task">Task Name</label>
@@ -68,12 +33,13 @@
                                 <label for="comment">Task Decription:</label>
                                 <textarea class="form-control" rows="5" id="task-description"></textarea>
                             </div>
+                            <div class="modal-footer">
+                                <button type="button" id="btnSaveClose" class="btn btn-default" data-dismiss="modal">Save and Close</button>
+                            </div>
 
                         </form>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Save and Close</button>
-                    </div>
+
                 </div>
 
             </div>
@@ -82,16 +48,23 @@
     </div>
     <section class="container">
 
-        <div class="todo-list box" style="height:536px;width:95%;overflow: scroll;">
+        <div class="todo-list box" style="height:572px;width:100%;overflow: scroll;">
             <div class="button-header" style="width:100%;height:13%">
-                <button type="button" id="completedTask" style="background-color: limegreen !important;color: black;" class="btn btn-outline-primary">Complete Task</button>
-                <button type="button" id="importantTask" style="background-color: chocolate !important;color: black;" class="btn btn-outline-secondary">Important</button>
-                <button type="button" id="deleteTask" style="background-color: red !important;color: black;" class="btn btn-outline-success">Delete</button>
-                <label id="errorMessage" style="display:none;color: red !important;">Please select Task to update</label>
-                <input style="float:right;margin-right: 13px;" type="text" id="myInput" onkeyup="myFunction()" placeholder="Search Task">
-                <h2>Task Details for User : @userName</h2>
+                <div style="width:30%">
+                    <button type="button" id="completedTask" style="background-color: limegreen !important;color: black;" class="btn btn-outline-primary">Complete Task</button>
+                    <button type="button" id="importantTask" style="background-color: chocolate !important;color: black;" class="btn btn-outline-secondary">Important</button>
+                    <button type="button" id="deleteTask" style="background-color: red !important;color: black;" class="btn btn-outline-success">Delete</button>
+                    <label id="errorMessage" class="alert alert-danger" style="display:none;color: red !important;">Please select Task to update</label>
+
+                </div>
+                <div style="width:70%;float: right;">
+                    <label style="float:left;width:50%"><h2>Task Details for User : @userName</h2></label>
+                    <input style="float:right;margin-right: 13px;" type="text" id="myInput" onkeyup="myFunction()" placeholder="Search Task">
+
+                </div>
             </div>
-            <div class="list-group">
+            <div class="list-group" style="width:100%">
+                <span style="font-weight: bold;margin-left: 561px;color: dimgray!important;"> Drag and Drop to priorities your Task </span>
                 <ul id="myUL">
                     @for (int i = 0; i < Model.Count; i++)
                     {
@@ -109,24 +82,30 @@
                             {
                                 style = "text-decoration: line-through";
                             }
-                            <li>
-                                <a href="#" id="TaskList" style="background-color:steelblue; !important;height:110px" class="list-group-item">
-                                    <h3 class="list-group-item-heading" style="color:burlywood ;"><input value="@Model[i].TaskId" name="taskchk" type="checkbox"><label style="@Html.Raw(style)">@Model[i].TaskName</label> @Html.Raw(@importantTask)</h3>
-                                    <h5 class="list-group-item-text"><label style="@Html.Raw(style)">@Model[i].TaskDescription</label></h5>
-                                    <label style="float:right">Last Modified on @Model[i].ModifiedDateTime</label>
-                                    <input type="hidden" value="@Model[i].TaskName" id="hdnTaskName_@Model[i].TaskId">
-                                    <input type="hidden" value="@Model[i].TaskDescription" id="hdnTaskDescription_@Model[i].TaskId">
-                                    <input type="hidden" value="@Model[i].CreateDateTime" id="hdnCreateDatetime_@Model[i].TaskId">
-                                    <input type="hidden" value="@Model[i].ModifiedDateTime" id="hdnModifiedDatetime_@Model[i].TaskId">
-                                    <input type="hidden" value="@Model[i].DeleteInd.ToString()" id="hdnDeleteInd_@Model[i].TaskId">
-                                    <input type="hidden" value="@Model[i].CompletedInd.ToString()" id="hdnCompleteInd_@Model[i].TaskId">
-                                    <input type="hidden" value="@impInd.ToString()" id="hdnImportantInd_@Model[i].TaskId">
+                            <li class="column" draggable="true">
+                                <a href="#" name="@Model[i].TaskId" style="background-color:grey; !important;height:110px" class="list-group-item">
+                                    <h3 name="@Model[i].TaskId" class="list-group-item-heading" style="color:burlywood ;"><input value="@Model[i].TaskId" id="chkbx_@Model[i].TaskId"name="taskchk" type="checkbox"><label for="chkbx_@Model[i].TaskId" style="@Html.Raw(style)" ;color: beige;">@Model[i].TaskName</label> @Html.Raw(@importantTask)</h3>
+                                    <h5 name="@Model[i].TaskId" class="list-group-item-text"><label for="chkbx_@Model[i].TaskId" style="@Html.Raw(style)">@Model[i].TaskDescription</label></h5>
+                                    <label name="@Model[i].TaskId" style="float:right">Last Modified on @Model[i].ModifiedDateTime</label>
+                                    <p name="@Model[i].TaskId">
+                                        <button name="@Model[i].TaskId" value="@Model[i].TaskId" style="font-size: initial;color:yellowgreen!important" type="button" class="btn btn-default btn-sm">
+                                            <span name="@Model[i].TaskId" class="glyphicon glyphicon-edit"></span> Edit
+                                        </button>
+                                    </p>
+                                    <input name="@Model[i].TaskId" type="hidden" value="@Model[i].TaskName" id="hdnTaskName_@Model[i].TaskId">
+                                    <input name="@Model[i].TaskId" type="hidden" value="@Model[i].TaskDescription" id="hdnTaskDescription_@Model[i].TaskId">
+                                    <input name="@Model[i].TaskId" type="hidden" value="@Model[i].CreateDateTime" id="hdnCreateDatetime_@Model[i].TaskId">
+                                    <input name="@Model[i].TaskId" type="hidden" value="@Model[i].ModifiedDateTime" id="hdnModifiedDatetime_@Model[i].TaskId">
+                                    <input name="@Model[i].TaskId" type="hidden" value="@Model[i].DeleteInd.ToString()" id="hdnDeleteInd_@Model[i].TaskId">
+                                    <input name="@Model[i].TaskId" type="hidden" value="@Model[i].CompletedInd.ToString()" id="hdnCompleteInd_@Model[i].TaskId">
+                                    <input name="@Model[i].TaskId" type="hidden" value="@impInd.ToString()" id="hdnImportantInd_@Model[i].TaskId">
                                 </a>
                             </li>
                         }
                     }
 
                 </ul>
+
             </div>
         </div>
 
@@ -136,37 +115,47 @@
 </body>
 </html>
 <style>
+    [draggable] {
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  /* Required to make elements draggable in old WebKit */
+  -khtml-user-drag: element;
+  -webkit-user-drag: element;
+}
     #myInput {
-  background-position: 10px 12px; /* Position the search icon */
-  background-repeat: no-repeat; /* Do not repeat the icon image */
-  width: 100%; /* Full-width */
-  font-size: 16px; /* Increase font-size */
-  padding: 12px 20px 12px 40px; /* Add some padding */
-  border: 1px solid #ddd; /* Add a grey border */
-  margin-bottom: 12px; /* Add some space below the input */
-}
+        background-position: 10px 12px; /* Position the search icon */
+        background-repeat: no-repeat; /* Do not repeat the icon image */
+        width: 100%; /* Full-width */
+        font-size: 16px; /* Increase font-size */
+        padding: 12px 20px 12px 40px; /* Add some padding */
+        border: 1px solid #ddd; /* Add a grey border */
+        margin-bottom: 12px; /* Add some space below the input */
+    }
 
-#myUL {
-  /* Remove default list styling */
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-}
+    #myUL {
+        /* Remove default list styling */
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
 
-#myUL li a {
-  border: 1px solid #ddd; /* Add a border to all links */
-  margin-top: -1px; /* Prevent double borders */
-  background-color: #f6f6f6; /* Grey background color */
-  padding: 12px; /* Add some padding */
-  text-decoration: none; /* Remove default text underline */
-  font-size: 11px; /* Increase the font-size */
-  color: black; /* Add a black text color */
-  display: block; /* Make it into a block element to fill the whole list */
-}
+        #myUL li a {
+            border: 1px solid lightgreen !important; /* Add a border to all links */
+            margin-top: -1px; /* Prevent double borders */
+            background-color: #f6f6f6; /* Grey background color */
+            padding: 12px; /* Add some padding */
+            text-decoration: none; /* Remove default text underline */
+            font-size: 11px; /* Increase the font-size */
+            color: black; /* Add a black text color */
+            display: block; /* Make it into a block element to fill the whole list */
+        }
 
-#myUL li a:hover:not(.header) {
-  background-color: #eee; /* Add a hover effect to all links, except for headers */
-}
+            #myUL li a:hover:not(.header) {
+                background-color: #eee; /* Add a hover effect to all links, except for headers */
+            }
+
     * {
         box-sizing: border-box;
     }
@@ -235,8 +224,95 @@
 </style>
 
 <script>
+    var dragSrcEl = null;
+
+function handleDragStart(e) {
+  // Target (this) element is the source node.
+  dragSrcEl = this;
+
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/html', this.outerHTML);
+
+  this.classList.add('dragElem');
+}
+function handleDragOver(e) {
+  if (e.preventDefault) {
+    e.preventDefault(); // Necessary. Allows us to drop.
+  }
+  this.classList.add('over');
+
+  e.dataTransfer.dropEffect = 'move';  // See the section on the DataTransfer object.
+
+  return false;
+}
+
+function handleDragEnter(e) {
+  // this / e.target is the current hover target.
+}
+
+function handleDragLeave(e) {
+  this.classList.remove('over');  // this / e.target is previous target element.
+}
+
+function handleDrop(e) {
+  // this/e.target is current target element.
+
+  if (e.stopPropagation) {
+    e.stopPropagation(); // Stops some browsers from redirecting.
+  }
+
+  // Don't do anything if dropping the same column we're dragging.
+  if (dragSrcEl != this) {
+    // Set the source column's HTML to the HTML of the column we dropped on.
+    //alert(this.outerHTML);
+    //dragSrcEl.innerHTML = this.innerHTML;
+    //this.innerHTML = e.dataTransfer.getData('text/html');
+    this.parentNode.removeChild(dragSrcEl);
+    var dropHTML = e.dataTransfer.getData('text/html');
+    this.insertAdjacentHTML('beforebegin',dropHTML);
+    var dropElem = this.previousSibling;
+    addDnDHandlers(dropElem);
+    
+  }
+  this.classList.remove('over');
+  return false;
+}
+
+function handleDragEnd(e) {
+  // this/e.target is the source node.
+  this.classList.remove('over');
+
+  /*[].forEach.call(cols, function (col) {
+    col.classList.remove('over');
+  });*/
+}
+
+function addDnDHandlers(elem) {
+  elem.addEventListener('dragstart', handleDragStart, false);
+  elem.addEventListener('dragenter', handleDragEnter, false)
+  elem.addEventListener('dragover', handleDragOver, false);
+  elem.addEventListener('dragleave', handleDragLeave, false);
+  elem.addEventListener('drop', handleDrop, false);
+  elem.addEventListener('dragend', handleDragEnd, false);
+
+}
+
+var cols = document.querySelectorAll('#myUL .column');
+[].forEach.call(cols, addDnDHandlers);
+
+
     var newTask = document.querySelector('#new-task');
     var editMode = false;
+    var taskDetails;
+    var newTaskBtn = true;
+    taskDetails = {
+        'TaskId': "",
+        'TaskName': "",
+        'TaskDescription': "",
+        'DeleteInd': "",
+        'ImportantInd':"",
+        'completedInd': "",
+}
 var taskdescription = document.querySelector('#task-description');
     var addTaskBtn = document.querySelector('#addTask');
 
@@ -252,13 +328,22 @@ var taskdescription = document.querySelector('#task-description');
         });
 
     })
-    $('#myModal').on('hidden.bs.modal', function () {
-        if (newTask.value == "") {
-            $("#errorMessageModalTask").modal('show');
+    $('#btnSaveClose').click(function () {
+        if ($("#new-task").val() == "") {
+             $("#errorMessageTask").show()
+          setTimeout(function () { $("#errorMessageTask").hide() }, 5000)
             return false;
         }
-        addUpdateTask(789, true, editMode);
-})
+        taskDetails.TaskName = $("#new-task").val();
+        taskDetails.TaskDescription = $("#task-description").val();
+        if (newTaskBtn) {
+             newTaskBtn = false;
+            addUpdateTask(789, true);
+        }
+        else {
+             addUpdateTask(taskDetails.TaskId, true);
+        }
+    });
 
     $("#completedTask").click(function () {
           var taskIds = [];
@@ -274,8 +359,8 @@ var taskdescription = document.querySelector('#task-description');
 
             });
         if (taskIds.length < 1) {
-            $("#errorMessage").show();
-          setTimeout(function () { $("#errorMessage").hide(); }, 3000)
+             $("#errorMessage").show()
+          setTimeout(function () { $("#errorMessage").hide() }, 5000)
         }
 
     });
@@ -293,8 +378,8 @@ var taskdescription = document.querySelector('#task-description');
 
             });
            if (taskIds.length < 1) {
-            $("#errorMessage").show();
-          setTimeout(function () { $("#errorMessage").hide(); }, 3000)
+               $("#errorMessage").show()
+          setTimeout(function () { $("#errorMessage").hide() }, 5000)
         }
 
      });
@@ -310,22 +395,23 @@ var taskdescription = document.querySelector('#task-description');
                 addUpdateTask($(this).val());
             });
          if (taskIds.length < 1) {
-             $("#errorMessage").show();
-             setTimeout(function () { $("#errorMessage").hide(); }, 3000)
+              $("#errorMessage").show()
+          setTimeout(function () { $("#errorMessage").hide() }, 5000)
          }
     });
 //ADD THE NEW TASK INTO ACTUAL INCOMPLETE LIST
-    var addUpdateTask = function (taskId, newTask = false, editMode = false) {
+    var addUpdateTask = function (taskId, newTask = false) {
         var data = {
             'TaskId': taskId,
-            'TaskName': newTask == false ? $("#hdnTaskName_" + taskId).val() : $("#new-task").val(),
-            'TaskDescription': newTask == false ? $("#hdnTaskDescription_" + taskId).val() : $("#task-description").val(),
+            'TaskName': newTask == false ? $("#hdnTaskName_" + taskId).val() : taskDetails.TaskName,
+            'TaskDescription': newTask == false ? $("#hdnTaskDescription_" + taskId).val() : taskDetails.TaskDescription,
             'DeleteInd': newTask == false ? $("#hdnDeleteInd_" + taskId).val() : false,
             'ImportantInd': newTask == false ? $("#hdnImportantInd_" + taskId).val() : false,
             'completedInd': newTask == false ?$("#hdnCompleteInd_" + taskId).val() : false,
         }
 
         $("#myModal").modal('hide');
+         $("#myModal").removeClass("fade");
         $.ajax({
             type: 'post',
             url: '@Url.Action("AddUpdateTask")',
@@ -333,13 +419,12 @@ var taskdescription = document.querySelector('#task-description');
             contentType: 'application/json; charset=utf-8',
             success: function (result) {
                 $("#main-container-login").html(result);
+                $("#successMessage").show()
+          setTimeout(function () { $("#successMessage").hide() }, 5000)
             }
         });
 
   newTask.value="";
-  //BIND THE NEW LIST ITEM TO THE INCOMPLETE LIST
-  //bindIncompleteItems(listItem, completeTask);
-
     };
     function myFunction() {
   // Declare variables
@@ -358,6 +443,28 @@ var taskdescription = document.querySelector('#task-description');
       li[i].style.display = "none";
     }
   }
-}
+    }
+    $("#addNewTask").click(function (e) {
+        newTaskBtn = true;
+        $("#myModal").modal('show');
+        $("#myModal").removeClass('fade');
+    });
+
+    $("#myUL button").click(function (e) {
+         newTaskBtn = false;
+        var taskId = event.target.getAttribute('name');
+        taskDetails.TaskId = taskId;
+        taskDetails.TaskName = $("#hdnTaskName_" + taskId).val();
+        taskDetails.TaskDescription = $("#hdnTaskDescription_" + taskId).val();
+        taskDetails.DeleteInd = $("#hdnDeleteInd_" + taskId).val();
+        taskDetails.ImportantInd = $("#hdnImportantInd_" + taskId).val();
+        taskDetails.completedInd = $("#hdnCompleteInd_" + taskId).val();
+        $("#myModal").modal('show');
+        $("#myModal").removeClass('fade');
+        $("#new-task").val(taskDetails.TaskName);
+        $("#task-description").val(taskDetails.TaskDescription);
+
+
+    });
 
 </script>

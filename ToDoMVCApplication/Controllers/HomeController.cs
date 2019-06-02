@@ -18,7 +18,7 @@ namespace ToDoMVCApplication.Controllers
         public ActionResult Index()
         {
             var dbPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory.ToString(), "tododatabasetest");
-            
+
             if (!System.IO.File.Exists("dbPath"))
             {
                 SQLiteConnection.CreateFile(dbPath);
@@ -335,7 +335,11 @@ namespace ToDoMVCApplication.Controllers
             conn.Open();
 
             sqlite_cmd = conn.CreateCommand();
-            sqlite_cmd.CommandText = "insert into Task (name, description, modifieddatetime, createddatetime,deleteInd,importantInd,Userid,completedInd) values ('Task100','Tyson','11/11/2019','11/11/2019',0,0,2,0);insert into Task (name, description, modifieddatetime, createddatetime,deleteInd,importantInd,Userid,completedInd) values ('Task200','Tyson2','10/11/2019','10/11/2019',0,0,2,0);";
+            StringBuilder str = new StringBuilder();
+            str.Append("insert into Task (name, description, modifieddatetime, createddatetime,deleteInd,importantInd,Userid,completedInd) values ('Implement Sign-in/Sign-up Page','Create secure Sign-in page for user. Also Provide functionality for Sign up for new User','29/05/2019','11/11/2019',0,0,2,0);");
+            str.Append("insert into Task(name, description, modifieddatetime, createddatetime, deleteInd, importantInd, Userid, completedInd) values('Implement functionality for Add/Update/Edit/Delete/Mark as Important', 'On successful login, show list of all Tasks and allow user to add or modify existing tasks', '30/06/2019', '10/11/2019', 0, 0, 2, 0); ");
+            str.Append("insert into Task (name, description, modifieddatetime, createddatetime,deleteInd,importantInd,Userid,completedInd) values ('Set up In Memory Database SQLite', 'Create Basic DB structure and required tables','10/11/2019','31/06/2019',0,0,2,0);");
+            sqlite_cmd.CommandText = str.ToString();
             sqlite_cmd.ExecuteNonQuery();
             conn.Close();
         }

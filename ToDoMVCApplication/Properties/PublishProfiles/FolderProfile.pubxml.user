@@ -37,10 +37,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/30/2019 21:45:01</publishTime>
     </File>
     <File Include="bin/Antlr3.Runtime.dll">
-      <publishTime>10/09/2013 16:29:20</publishTime>
+      <publishTime>09/10/2013 16:29:20</publishTime>
     </File>
     <File Include="bin/Antlr3.Runtime.pdb">
-      <publishTime>10/09/2013 16:29:20</publishTime>
+      <publishTime>09/10/2013 16:29:20</publishTime>
     </File>
     <File Include="bin/EntityFramework.dll">
       <publishTime>10/23/2017 13:15:18</publishTime>
@@ -202,16 +202,16 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>04/17/2019 18:07:28</publishTime>
     </File>
     <File Include="bin/System.Data.SQLite.dll">
-      <publishTime>02/03/2019 20:01:52</publishTime>
+      <publishTime>03/02/2019 20:01:52</publishTime>
     </File>
     <File Include="bin/System.Data.SQLite.dll.config">
       <publishTime>08/13/2018 21:49:28</publishTime>
     </File>
     <File Include="bin/System.Data.SQLite.EF6.dll">
-      <publishTime>02/03/2019 20:01:54</publishTime>
+      <publishTime>03/02/2019 20:01:54</publishTime>
     </File>
     <File Include="bin/System.Data.SQLite.Linq.dll">
-      <publishTime>02/03/2019 20:01:54</publishTime>
+      <publishTime>03/02/2019 20:01:54</publishTime>
     </File>
     <File Include="bin/System.Data.SqlServerCe.dll">
       <publishTime>08/08/2012 18:02:00</publishTime>
@@ -223,7 +223,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>11/28/2018 11:59:46</publishTime>
     </File>
     <File Include="bin/System.Web.Optimization.dll">
-      <publishTime>11/02/2014 14:26:04</publishTime>
+      <publishTime>02/11/2014 14:26:04</publishTime>
     </File>
     <File Include="bin/System.Web.Razor.dll">
       <publishTime>11/28/2018 12:00:12</publishTime>
@@ -238,10 +238,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>11/28/2018 12:04:24</publishTime>
     </File>
     <File Include="bin/ToDoMVCApplication.dll">
-      <publishTime>06/01/2019 23:09:32</publishTime>
+      <publishTime>06/02/2019 04:16:40</publishTime>
     </File>
     <File Include="bin/ToDoMVCApplication.pdb">
-      <publishTime>06/01/2019 23:09:32</publishTime>
+      <publishTime>06/02/2019 04:16:40</publishTime>
     </File>
     <File Include="bin/WebGrease.dll">
       <publishTime>01/23/2014 12:57:34</publishTime>
@@ -367,16 +367,16 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/29/2019 13:02:54</publishTime>
     </File>
     <File Include="Views/Home/Index.cshtml">
-      <publishTime>05/31/2019 22:44:27</publishTime>
+      <publishTime>06/02/2019 04:16:30</publishTime>
     </File>
     <File Include="Views/Home/ToDoMain.cshtml">
       <publishTime>05/30/2019 13:38:21</publishTime>
     </File>
     <File Include="Views/Home/ToDoMainPage.cshtml">
-      <publishTime>06/01/2019 03:20:31</publishTime>
+      <publishTime>06/02/2019 04:16:16</publishTime>
     </File>
     <File Include="Views/Home/_LoginPage.cshtml">
-      <publishTime>06/01/2019 03:43:21</publishTime>
+      <publishTime>01/06/2019 03:43:21</publishTime>
     </File>
     <File Include="Views/Shared/Error.cshtml">
       <publishTime>05/29/2019 13:02:42</publishTime>
