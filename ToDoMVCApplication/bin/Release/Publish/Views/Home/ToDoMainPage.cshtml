@@ -446,6 +446,14 @@ var taskdescription = document.querySelector('#task-description');
     }
     $("#addNewTask").click(function (e) {
         newTaskBtn = true;
+         taskDetails = {
+        'TaskId': "",
+        'TaskName': "",
+        'TaskDescription': "",
+        'DeleteInd': "",
+        'ImportantInd':"",
+        'completedInd': "",
+}
         $("#myModal").modal('show');
         $("#myModal").removeClass('fade');
     });
