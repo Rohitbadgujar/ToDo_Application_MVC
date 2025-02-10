@@ -1,0 +1,63 @@
+document.addEventListener("DOMContentLoaded", function () {
+    // Define a list of supported events (you can add more here)
+    const supportedEvents = ["click", "blur", "change", "mouseover", "mouseout", "focus"]; // Add any events you want to support
+
+    // Dynamically attach event listeners for all supported events
+    supportedEvents.forEach(eventType => {
+        document.body.addEventListener(eventType, handleEvent, true);
+    });
+
+    function handleEvent(event) {
+        const target = event.target;
+        const eventType = event.type;
+
+        let functionMapping = target.getAttribute("data-function");
+        let paramMapping = target.getAttribute("data-params");
+
+        try {
+            // Parse JSON for functions and params
+            functionMapping = functionMapping ? JSON.parse(functionMapping) : {};
+            paramMapping = paramMapping ? JSON.parse(paramMapping) : {};
+        } catch (e) {
+            console.error("Invalid JSON in data attributes", e);
+            return;
+        }
+
+        // Check if the element has a function mapped for this event type
+        const functionName = functionMapping[eventType];
+        const params = paramMapping[eventType] || [];
+
+        // Ensure the function is defined and execute it
+        if (functionName && typeof window[functionName] === "function") {
+            window[functionName].apply(target, [event, ...params]);
+        } else {
+            console.warn(`Function "${functionName}" for event "${eventType}" is not defined.`);
+        }
+    }
+});
+
+// Example functions to be executed on different events
+
+function method1(event, message) {
+    console.log("Click event triggered:", message);
+}
+
+function method2(event, message) {
+    console.log("Blur event triggered:", message);
+}
+
+function method3(event, message) {
+    console.log("Mouseover event triggered:", message);
+}
+
+function method4(event, message) {
+    console.log("Mouseout event triggered:", message);
+}
+
+function method5(event, message) {
+    console.log("Change event triggered:", message);
+}
+
+function method6(event, message) {
+    console.log("Focus event triggered:", message);
+}
